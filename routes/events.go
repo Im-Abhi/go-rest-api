@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/Im-Abhi/leaning-go/rest-api/models"
+	"github.com/Im-Abhi/leaning-go/rest-api/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -39,15 +40,20 @@ func createEvent(context *gin.Context) {
 		return
 	}
 
+	err := utils.VerifyToken(token)
+	if err != nil {
+		context.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized!"})
+		return
+	}
+
 	var event models.Event
-	err := context.ShouldBindJSON(&event)
+	err = context.ShouldBindJSON(&event)
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Couldn't parse request data"})
 		return
 	}
 
-	event.ID = 1
 	event.UserID = 1
 
 	err = event.Save()

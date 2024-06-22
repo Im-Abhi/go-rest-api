@@ -21,19 +21,19 @@ func GenerateToken(email string, userId int64) (string, error) {
 func VerifyToken(tokenString string) error {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, errors.New("Unexpected signing method")
+			return nil, errors.New("unexpected signing method")
 		}
 
-		return SECRET_KEY, nil
+		return []byte(SECRET_KEY), nil
 	})
 
 	if err != nil {
-		return errors.New("Could not parse token.")
+		return errors.New("could not parse token")
 	}
 
 	tokenIsValid := token.Valid
 	if !tokenIsValid {
-		return errors.New("Invalid token.")
+		return errors.New("invalid token")
 	}
 
 	// claims, ok := token.Claims.(jwt.MapClaims);
