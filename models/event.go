@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/Im-Abhi/leaning-go/rest-api/db"
@@ -108,6 +109,23 @@ func (event *Event) Register(userId int64) error {
 		`
 		INSERT INTO registrations(event_id, user_id) VALUES(?, ?)
 		`
+	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(event.ID, userId)
+	return err
+}
+
+func (event *Event) CancelRegistration(userId int64) error {
+	query :=
+		`
+	DELETE FROM registrations WHERE event_id = ? AND user_id = ?
+	`
+
+	fmt.Println("eventId: ", event.ID, "userId: ", userId)
 	stmt, err := db.DB.Prepare(query)
 	if err != nil {
 		return err
