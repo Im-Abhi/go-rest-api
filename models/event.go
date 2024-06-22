@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/Im-Abhi/leaning-go/rest-api/db"
@@ -125,7 +124,6 @@ func (event *Event) CancelRegistration(userId int64) error {
 	DELETE FROM registrations WHERE event_id = ? AND user_id = ?
 	`
 
-	fmt.Println("eventId: ", event.ID, "userId: ", userId)
 	stmt, err := db.DB.Prepare(query)
 	if err != nil {
 		return err
