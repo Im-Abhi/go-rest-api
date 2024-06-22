@@ -48,7 +48,7 @@ func (user *User) ValidateCredentials() error {
 
 	var retrivedPassword string
 	err := row.Scan(&user.ID, &retrivedPassword)
-	
+
 	if err != nil {
 		return errors.New("invalid credentials")
 	}
