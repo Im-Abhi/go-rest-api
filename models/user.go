@@ -1,6 +1,8 @@
 package models
 
 import (
+	"errors"
+
 	"github.com/Im-Abhi/leaning-go/rest-api/db"
 	"github.com/Im-Abhi/leaning-go/rest-api/utils"
 )
@@ -34,4 +36,26 @@ func (user *User) Save() error {
 	id, err := result.LastInsertId()
 	user.ID = id
 	return err
+}
+
+func (user User) ValidateCredentials() error {
+	query :=
+		`
+		SELECT password FROM users WHERE email = ?
+	`
+
+	row := db.DB.QueryRow(query, user.Email)
+	var retrivedPassword string
+	err := row.Scan(&retrivedPassword)
+	if err != nil {
+		return errors.New("invalid credentials")
+	}
+
+	passwordIsValid := utils.CheckPasswordHash(user.Password, retrivedPassword)
+
+	if !passwordIsValid {
+		return errors.New("invalid credentials")
+	}
+
+	return nil
 }
